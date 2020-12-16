@@ -22,7 +22,7 @@ CHUNK = 1024
 # torch.manual_seed(1)    # reproducible
 
 # Hyper Parameters
-TIME_STEP = 10      # rnn time step
+TIME_STEP = 2048     # rnn time step
 INPUT_SIZE = 1      # rnn input size
 LR = 0.02           # learning rate
 
@@ -110,7 +110,7 @@ for step in range(10):
     print("y_np")
     print(y_np)
     #use the wave data
-    x_np = np_wave_data.astype(np.float32)[0:10]
+    x_np = np_wave_data.astype(np.float32)[0:TIME_STEP]
     #print("new x_np")
     #print(x_np.shape)
     x = torch.from_numpy(x_np[np.newaxis, :, np.newaxis])    # shape (batch, time_step, input_size)
