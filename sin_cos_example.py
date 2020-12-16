@@ -11,6 +11,14 @@ from torch import nn
 import numpy as np
 import matplotlib.pyplot as plt
 
+import pyaudio
+import wave
+import sys
+import os
+
+CHUNK = 1024
+
+
 # torch.manual_seed(1)    # reproducible
 
 # Hyper Parameters
@@ -27,6 +35,24 @@ y_np = np.cos(steps)
 # plt.legend(loc='best')
 # plt.show()
 
+music_src_dir = '/Users/caojiang/Music/QQ音乐/'
+lists = os.listdir(music_src_dir)
+print(lists)
+wf = wave.open('./file_example_WAV_2MG.wav', 'rb')
+
+# instantiate PyAudio (1)
+p = pyaudio.PyAudio()
+
+# open stream (2)
+stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
+                channels=wf.getnchannels(),
+                rate=wf.getframerate(),
+                output=True)
+
+wave_data = wf.readframes(CHUNK)
+np_wave_data =  np.fromstring(wave_data,dtype=np.int16)
+INPUT_SIZE = np_wave_data.shape[0]
+print(INPUT_SIZE)
 
 class RNN(nn.Module):
     def __init__(self):
@@ -79,7 +105,14 @@ for step in range(10):
     steps = np.linspace(start, end, TIME_STEP, dtype=np.float32, endpoint=False)  # float32 for converting torch FloatTensor
     x_np = np.sin(steps)
     y_np = np.cos(steps)
-
+    print("x_np")
+    print(x_np.shape)
+    print("y_np")
+    print(y_np)
+    #use the wave data
+    x_np = np_wave_data
+    print("new x_np")
+    print(x_np.shape)
     x = torch.from_numpy(x_np[np.newaxis, :, np.newaxis])    # shape (batch, time_step, input_size)
     y = torch.from_numpy(y_np[np.newaxis, :, np.newaxis])
     print(x)
