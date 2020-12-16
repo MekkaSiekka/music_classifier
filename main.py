@@ -13,7 +13,7 @@ CHUNK = 1024
 music_src_dir = '/Users/caojiang/Music/QQ音乐/'
 lists = os.listdir(music_src_dir)
 print(lists)
-wf = wave.open('/Users/caojiang/Downloads/file_example_WAV_2MG.wav', 'rb')
+wf = wave.open('./file_example_WAV_2MG.wav', 'rb')
 
 # instantiate PyAudio (1)
 p = pyaudio.PyAudio()
