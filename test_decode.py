@@ -13,7 +13,7 @@ CHUNK = 512
 music_src_dir = '/Users/caojiang/Music/QQ音乐/'
 lists = os.listdir(music_src_dir)
 print(lists)
-wf = wave.open('./music/CJ-Whoopty.wav', 'rb')
+wf = wave.open('./none_music/rec.wav', 'rb')
 
 # instantiate PyAudio (1)
 p = pyaudio.PyAudio()
