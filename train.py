@@ -50,7 +50,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
 print(model)
 
 
-dbfile = open('train_test_pickle.pkl', 'rb')      
+dbfile = open('train.pkl', 'rb')      
 train_test_set = pickle.load(dbfile) 
 dbfile.close() 
 
@@ -60,11 +60,11 @@ train_set = train_test_set[0:split_idx]
 test_set = train_test_set[split_idx:]
 
 
-epochs = 10
+epochs = 1
 for i in range(epochs):
     #for seq, labels in train_inout_seq:
     random.shuffle(train_set)
-    for cnt in range(0,len(train_set)):
+    for cnt in range(0,len(train_set),2):
     #for cnt in range(1):
         data = torch.FloatTensor(train_set[cnt][0]).view(-1)
         y_gt = torch.FloatTensor(train_set[cnt][1]).view(-1)
