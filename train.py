@@ -64,11 +64,11 @@ epochs = 10
 for i in range(epochs):
     #for seq, labels in train_inout_seq:
     random.shuffle(train_set)
-    #for cnt in range(0,len(train_set)):
-    for cnt in range(1):
+    for cnt in range(0,len(train_set)):
+    #for cnt in range(1):
         data = torch.FloatTensor(train_set[cnt][0]).view(-1)
         y_gt = torch.FloatTensor(train_set[cnt][1]).view(-1)
-        print(y_gt)
+        
         optimizer.zero_grad()
         model.hidden_cell = (torch.zeros(1, 1, model.hidden_layer_size),
                         torch.zeros(1, 1, model.hidden_layer_size))
@@ -77,11 +77,31 @@ for i in range(epochs):
         single_loss = loss_function(y_pred, y_gt)
         single_loss.backward()
         optimizer.step()
-
+        print("pred",y_pred)
+        print("gt",y_gt)
+        print()
         #if i%25 == 1:
         print(f'epoch: {i:3} loss: {single_loss.item():10.8f}')
         print(cnt)
 
+false_cnt = 0
+for cnt in range(len(test_set)):
+    data = torch.FloatTensor(test_set[cnt][0]).view(-1)
+    y_gt = torch.FloatTensor(test_set[cnt][1]).view(-1) 
+    model.hidden_cell = (torch.zeros(1, 1, model.hidden_layer_size),
+                        torch.zeros(1, 1, model.hidden_layer_size))
+    y_pred = model(data)
+    print(y_pred)
+    print(y_gt)
+    np_pred = y_pred[0].detach().numpy()
+    np_gt = y_gt[0].detach().numpy()
+    print()
+    if np_gt * np_pred <0:
+        false_cnt = false_cnt +1
+
+print("ACCURATE RATE", 1-float(false_cnt)/len(test_set))
+
+'''
 PATH = "entire_model.pt"
 # Save
 torch.save(model, PATH)
@@ -94,4 +114,5 @@ for cnt in range(len(test_set)):
     y_pred = model2(data)
     print(y_pred)
     print(y_gt)
+'''
     
