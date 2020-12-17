@@ -16,6 +16,8 @@ import pickle #load train data
 
 import random #shuffle
 
+BATCH_SIZE = 16
+
 
 #https://stackabuse.com/time-series-prediction-using-lstm-with-pytorch-in-python/
 # sns.get_dataset_names()
@@ -64,10 +66,16 @@ epochs = 1
 for i in range(epochs):
     #for seq, labels in train_inout_seq:
     random.shuffle(train_set)
-    for cnt in range(0,len(train_set),2):
+    
+    for cnt in range(0,len(train_set),BATCH_SIZE):
     #for cnt in range(1):
-        data = torch.FloatTensor(train_set[cnt][0]).view(-1)
-        y_gt = torch.FloatTensor(train_set[cnt][1]).view(-1)
+        batch_data = []
+        batch_gt = []
+        for i in range(BATCH_SIZE):
+            batch_data.append(train_set[cnt+i][0])
+            batch_gt.append(train_set[cnt+i][1])
+        data = torch.FloatTensor(batch_data).view(-1)
+        y_gt = torch.FloatTensor(batch_gt).view(-1)
         
         optimizer.zero_grad()
         model.hidden_cell = (torch.zeros(1, 1, model.hidden_layer_size),
