@@ -1,4 +1,4 @@
-
+# converts the data from .mp3 to wav, given a director
 import pyaudio
 import wave
 import sys
@@ -13,8 +13,15 @@ print(music_list)
 
 for music_name in music_list:
     abs_dir = music_dir + music_name
+    abs_dir = '\''+abs_dir+'\''
     a = "ffmpeg -i "
-    b = "-acodec pcm_u8 -ar 22050 "
+    b = " -acodec pcm_u8 -ar 22050 "
     new_dir = abs_dir.replace('.mp3','.wav')
     cmd = a + abs_dir + b + new_dir
+    print(cmd)
+    os.system(cmd)
+
+
+
+
 

@@ -3,7 +3,7 @@ import wave
 import sys
 import numpy as np
 import os
-CHUNK = 1024
+CHUNK = 512
 #https://stackabuse.com/time-series-prediction-using-lstm-with-pytorch-in-python/
 
 
@@ -38,6 +38,7 @@ while len(data) > 0:
     data = wf.readframes(CHUNK)
     cnt = cnt+1
     print(cnt)
+
 
 # stop stream (4)
 stream.stop_stream()
