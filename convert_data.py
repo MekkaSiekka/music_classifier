@@ -1,4 +1,4 @@
-# converts the data from .mp3 to wav, given a director
+# converts the data from .mp3 to wav, given a directory
 import pyaudio
 import wave
 import sys
