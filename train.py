@@ -6,10 +6,9 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-CHUNK = 1024
-
 import pyaudio
 import wave
+
 import sys
 import os
 
@@ -24,23 +23,6 @@ import random #shuffle
 #print(flight_data.head())
 #print(flight_data.shape)
 
-
-music_src_dir = '/Users/caojiang/Music/QQ音乐/'
-lists = os.listdir(music_src_dir)
-print(lists)
-wf = wave.open('./file_example_WAV_2MG.wav', 'rb')
-
-# instantiate PyAudio (1)
-p = pyaudio.PyAudio()
-
-# open stream (2)
-stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
-                channels=wf.getnchannels(),
-                rate=wf.getframerate(),
-                output=True)
-
-wave_data = wf.readframes(CHUNK)
-np_wave_data =  np.fromstring(wave_data,dtype=np.int16)
 
 
 class LSTM(nn.Module):
@@ -60,26 +42,33 @@ class LSTM(nn.Module):
         predictions = self.linear(lstm_out.view(len(input_seq), -1))
         return predictions[-1]
 
+
+
 model = LSTM()
 loss_function = nn.MSELoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
-
+optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
 print(model)
 
-
-epochs = 1
 
 dbfile = open('train_test_pickle.pkl', 'rb')      
 train_test_set = pickle.load(dbfile) 
 dbfile.close() 
 
+fract = 0.8
+split_idx = int(fract*len(train_test_set))
+train_set = train_test_set[0:split_idx]
+test_set = train_test_set[split_idx:]
 
 
+epochs = 10
 for i in range(epochs):
     #for seq, labels in train_inout_seq:
-    for cnt in range(0,500):
-        data = torch.FloatTensor(train_test_set[0][0]).view(-1)
-        y_gt = torch.FloatTensor(train_test_set[0][1]).view(-1)
+    random.shuffle(train_set)
+    #for cnt in range(0,len(train_set)):
+    for cnt in range(1):
+        data = torch.FloatTensor(train_set[cnt][0]).view(-1)
+        y_gt = torch.FloatTensor(train_set[cnt][1]).view(-1)
+        print(y_gt)
         optimizer.zero_grad()
         model.hidden_cell = (torch.zeros(1, 1, model.hidden_layer_size),
                         torch.zeros(1, 1, model.hidden_layer_size))
@@ -92,3 +81,17 @@ for i in range(epochs):
         #if i%25 == 1:
         print(f'epoch: {i:3} loss: {single_loss.item():10.8f}')
         print(cnt)
+
+PATH = "entire_model.pt"
+# Save
+torch.save(model, PATH)
+
+model2 = torch.load(PATH)
+
+for cnt in range(len(test_set)):
+    data = torch.FloatTensor(test_set[cnt][0]).view(-1)
+    y_gt = torch.FloatTensor(test_set[cnt][1]).view(-1)
+    y_pred = model2(data)
+    print(y_pred)
+    print(y_gt)
+    

@@ -3,7 +3,7 @@ import wave
 import sys
 import numpy as np
 import os
-CHUNK = 512
+CHUNK = 2048*4
 #https://stackabuse.com/time-series-prediction-using-lstm-with-pytorch-in-python/
 
 
@@ -13,7 +13,7 @@ CHUNK = 512
 music_src_dir = '/Users/caojiang/Music/QQ音乐/'
 lists = os.listdir(music_src_dir)
 print(lists)
-wf = wave.open('./none_music/rec.wav', 'rb')
+wf = wave.open('/Users/caojiang/Downloads/Cartoon-10.wav', 'rb')
 
 # instantiate PyAudio (1)
 p = pyaudio.PyAudio()
