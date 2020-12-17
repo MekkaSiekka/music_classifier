@@ -4,6 +4,7 @@ import sys
 import numpy as np
 import os
 import pickle
+import random
 CHUNK = 2048
 RATE = 44100
 
@@ -33,11 +34,12 @@ def gen_set_from_file(file_dir,train_test_set,good = True):
         #stream.write(data)
         np_data = np_data.astype(np.float32)
         np_data = np_data/32780
+        np_DATA = np_data[0:4:]
         label = np_data[0:1]
         if (good):
             label[0] = 1.0
         else:
-            label[0] = 0.0
+            label[0] = -1.0
         train_test_set.append([np_data,label])
         # stop stream (4)
     stream.stop_stream()
@@ -46,8 +48,32 @@ def gen_set_from_file(file_dir,train_test_set,good = True):
     p.terminate()
 
 train_test_set = []
-gen_set_from_file('./music/CJ-Whoopty.wav',train_test_set)
-print(train_test_set)
+
+#collect data for music
+music_dir = './music/'
+music_list = os.listdir(music_dir)
+
+for m in music_list:
+    fn = music_dir + m
+    print(fn)
+    gen_set_from_file(fn,train_test_set)
+
+#collect data for none-music
+false_train_set = []
+music_dir = './none_music/'
+music_list = os.listdir(music_dir)
+for m in music_list:
+    fn = music_dir + m
+    print(fn)
+    gen_set_from_file(fn,false_train_set,False)
+
+random.shuffle(train_test_set)
+random.shuffle(false_train_set)
+
+train_test_set = train_test_set[0:len(false_train_set)]
+
+test_set = train_test_set + false_train_set
+
 
 dbfile = open('train_test_pickle.pkl', 'wb') 
 # source, destination 
@@ -58,6 +84,8 @@ dbfile = open('train_test_pickle.pkl', 'rb')
 train_test_set = pickle.load(dbfile) 
 dbfile.close() 
 
+print(len(train_test_set))
 for data in train_test_set:
-    print(data[0][0:20])
+    #print(data[0][0:20])
     continue
+

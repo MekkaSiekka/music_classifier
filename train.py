@@ -13,6 +13,10 @@ import wave
 import sys
 import os
 
+import pickle #load train data
+
+import random #shuffle
+
 
 #https://stackabuse.com/time-series-prediction-using-lstm-with-pytorch-in-python/
 # sns.get_dataset_names()
@@ -65,18 +69,23 @@ print(model)
 
 epochs = 1
 
-data = torch.FloatTensor(np_wave_data).view(-1)
+dbfile = open('train_test_pickle.pkl', 'rb')      
+train_test_set = pickle.load(dbfile) 
+dbfile.close() 
+
+
 
 for i in range(epochs):
     #for seq, labels in train_inout_seq:
     for cnt in range(0,500):
+        data = torch.FloatTensor(train_test_set[0][0]).view(-1)
+        y_gt = torch.FloatTensor(train_test_set[0][1]).view(-1)
         optimizer.zero_grad()
         model.hidden_cell = (torch.zeros(1, 1, model.hidden_layer_size),
                         torch.zeros(1, 1, model.hidden_layer_size))
-
         y_pred = model(data)
         #todo: assign correct output 
-        single_loss = loss_function(y_pred, data[1:2])
+        single_loss = loss_function(y_pred, y_gt)
         single_loss.backward()
         optimizer.step()
 
