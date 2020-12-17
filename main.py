@@ -13,7 +13,7 @@ CHUNK = 512
 music_src_dir = '/Users/caojiang/Music/QQ音乐/'
 lists = os.listdir(music_src_dir)
 print(lists)
-wf = wave.open('./file_example_WAV_2MG.wav', 'rb')
+wf = wave.open('./music/CJ-Whoopty.wav', 'rb')
 
 # instantiate PyAudio (1)
 p = pyaudio.PyAudio()
@@ -31,7 +31,7 @@ cnt = 0
 while len(data) > 0:
    # print(data)
     np_data =  np.fromstring(data,dtype=np.int16)
-    print(np_data)
+    print(np_data[0:8])
     print(np_data.shape)
     #write the data for playing
     stream.write(data)
