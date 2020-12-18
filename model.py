@@ -33,3 +33,19 @@ class LSTM(nn.Module):
         lstm_out, self.hidden_cell = self.lstm(input_seq.view(len(input_seq) ,1, -1), self.hidden_cell)
         predictions = self.linear(lstm_out.view(len(input_seq), -1))
         return predictions[-1]
+
+    def eval(self,test_test):
+        for cnt in range(len(test_set)):
+            data = torch.FloatTensor(test_set[cnt][0]).view(-1)
+            y_gt = torch.FloatTensor(test_set[cnt][1]).view(-1) 
+            model.hidden_cell = (torch.zeros(1, 1, model.hidden_layer_size),
+                                torch.zeros(1, 1, model.hidden_layer_size))
+            y_pred = model(data)
+            #running test
+            np_pred = y_pred[0].detach().numpy()
+            np_gt = y_gt[0].detach().numpy()
+            #print(np_pred,np_gt)
+            if np_gt * np_pred <0:
+                false_cnt = false_cnt +1
+        return 1-float(false_cnt)/len(test_set)
+        
