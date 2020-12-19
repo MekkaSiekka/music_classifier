@@ -6,8 +6,9 @@ import os
 import pickle
 import random
 DATA_SIZE = 32
-SKIP_EVERY = 1
+
 CHUNK = 2048
+SKIP_EVERY = 1
 RATE = 44100
 TARGET  = "test"
 
